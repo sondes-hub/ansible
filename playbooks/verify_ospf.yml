@@ -1,7 +1,11 @@
 ---
 - name: VÉRIFICATION OSPF
   hosts: routers
-  gather_facts: yes
+  gather_facts: no
+  
+  vars:
+    current_date: "{{ lookup('pipe', 'date +%Y-%m-%d') }}"
+    current_time: "{{ lookup('pipe', 'date +%H:%M:%S') }}"
   
   tasks:
     - name: Vérifier les voisins OSPF
@@ -27,8 +31,8 @@
         content: |
           ========================================
           VÉRIFICATION OSPF - {{ inventory_hostname }}
-          Date: {{ ansible_date_time.date }}
-          Heure: {{ ansible_date_time.time }}
+          Date: {{ current_date }}
+          Heure: {{ current_time }}
           ========================================
           
           VOISINS OSPF:
@@ -36,5 +40,5 @@
           
           ROUTES OSPF:
           {{ ospf_routes.stdout[0] }}
-        dest: "/home/vagrant/ansible/reports/ospf_{{ inventory_hostname }}_{{ ansible_date_time.date }}.txt"
+        dest: "/home/vagrant/ansible/reports/ospf_{{ inventory_hostname }}_{{ current_date }}.txt"
       delegate_to: localhost
