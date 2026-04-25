@@ -1,7 +1,7 @@
 ---
 - name: VÉRIFICATION OSPF
   hosts: routers
-  gather_facts: no
+  gather_facts: yes
   
   tasks:
     - name: Vérifier les voisins OSPF
@@ -28,6 +28,7 @@
           ========================================
           VÉRIFICATION OSPF - {{ inventory_hostname }}
           Date: {{ ansible_date_time.date }}
+          Heure: {{ ansible_date_time.time }}
           ========================================
           
           VOISINS OSPF:

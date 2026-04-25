@@ -1,11 +1,10 @@
 ---
 - name: SAUVEGARDE DES CONFIGURATIONS ROUTEURS
   hosts: routers
-  gather_facts: no
+  gather_facts: yes
   
   vars:
     backup_dir: "/home/vagrant/ansible/backups"
-    date: "{{ ansible_date_time.date }}"
   
   tasks:
     - name: Créer le répertoire de backup
@@ -27,15 +26,16 @@
         content: |
           # ============================================
           # BACKUP: {{ inventory_hostname }}
-          # DATE: {{ date }}
+          # DATE: {{ ansible_date_time.date }}
+          # HEURE: {{ ansible_date_time.time }}
           # ============================================
           {{ running_config.stdout[0] }}
-        dest: "{{ backup_dir }}/{{ inventory_hostname }}/{{ inventory_hostname }}_{{ date }}.cfg"
+        dest: "{{ backup_dir }}/{{ inventory_hostname }}/{{ inventory_hostname }}_{{ ansible_date_time.date }}.cfg"
       delegate_to: localhost
     
     - name: Créer le lien latest
       file:
-        src: "{{ backup_dir }}/{{ inventory_hostname }}/{{ inventory_hostname }}_{{ date }}.cfg"
+        src: "{{ backup_dir }}/{{ inventory_hostname }}/{{ inventory_hostname }}_{{ ansible_date_time.date }}.cfg"
         dest: "{{ backup_dir }}/{{ inventory_hostname }}/latest.cfg"
         state: link
         force: yes
