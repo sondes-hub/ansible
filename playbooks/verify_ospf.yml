@@ -1,0 +1,39 @@
+---
+- name: VÉRIFICATION OSPF
+  hosts: routers
+  gather_facts: no
+  
+  tasks:
+    - name: Vérifier les voisins OSPF
+      ios_command:
+        commands:
+          - show ip ospf neighbor
+      register: ospf_neighbors
+    
+    - name: Vérifier les routes OSPF
+      ios_command:
+        commands:
+          - show ip route ospf
+      register: ospf_routes
+    
+    - name: Afficher les voisins
+      debug:
+        msg: |
+          📡 {{ inventory_hostname }} - VOISINS OSPF:
+          {{ ospf_neighbors.stdout[0] }}
+    
+    - name: Générer rapport
+      copy:
+        content: |
+          ========================================
+          VÉRIFICATION OSPF - {{ inventory_hostname }}
+          Date: {{ ansible_date_time.date }}
+          ========================================
+          
+          VOISINS OSPF:
+          {{ ospf_neighbors.stdout[0] }}
+          
+          ROUTES OSPF:
+          {{ ospf_routes.stdout[0] }}
+        dest: "/home/vagrant/ansible/reports/ospf_{{ inventory_hostname }}_{{ ansible_date_time.date }}.txt"
+      delegate_to: localhost

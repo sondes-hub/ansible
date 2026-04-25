@@ -1,0 +1,46 @@
+---
+- name: SAUVEGARDE DES CONFIGURATIONS ROUTEURS
+  hosts: routers
+  gather_facts: no
+  
+  vars:
+    backup_dir: "/home/vagrant/ansible/backups"
+    date: "{{ ansible_date_time.date }}"
+  
+  tasks:
+    - name: Créer le répertoire de backup
+      file:
+        path: "{{ backup_dir }}/{{ inventory_hostname }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      run_once: true
+    
+    - name: Backup running-config
+      ios_command:
+        commands:
+          - show running-config
+      register: running_config
+    
+    - name: Sauvegarder la configuration
+      copy:
+        content: |
+          # ============================================
+          # BACKUP: {{ inventory_hostname }}
+          # DATE: {{ date }}
+          # ============================================
+          {{ running_config.stdout[0] }}
+        dest: "{{ backup_dir }}/{{ inventory_hostname }}/{{ inventory_hostname }}_{{ date }}.cfg"
+      delegate_to: localhost
+    
+    - name: Créer le lien latest
+      file:
+        src: "{{ backup_dir }}/{{ inventory_hostname }}/{{ inventory_hostname }}_{{ date }}.cfg"
+        dest: "{{ backup_dir }}/{{ inventory_hostname }}/latest.cfg"
+        state: link
+        force: yes
+      delegate_to: localhost
+    
+    - name: Afficher résultat
+      debug:
+        msg: "✅ Backup de {{ inventory_hostname }} terminé"
