@@ -1,0 +1,5 @@
+ALERTE: Configuration modifiée sur R1
+Date: 2026-04-26
+Heure: 18:05:21
+Backup: R1_20260426_180521.cfg
+Changement détecté automatiquement.
