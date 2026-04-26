@@ -1,0 +1,5 @@
+ALERTE: Configuration modifiée sur R2
+Date: 2026-04-26
+Heure: 22:05:12
+Backup: R2_20260426_220512.cfg
+Changement détecté automatiquement.
