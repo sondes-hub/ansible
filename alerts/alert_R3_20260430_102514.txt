@@ -1,0 +1,5 @@
+ALERTE: Configuration modifiée sur R3
+Date: 2026-04-30
+Heure: 10:25:13
+Backup: R3_20260430_102513.cfg
+Changement détecté automatiquement.
